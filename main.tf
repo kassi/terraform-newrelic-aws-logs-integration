@@ -36,7 +36,7 @@ data "aws_region" "current" {}
 data "aws_iam_policy_document" "assume_role" {
   for_each = toset([
     "firehose",
-    "logs.${data.aws_region.current.name}"
+    "logs.${data.aws_region.current.region}"
   ])
   statement {
     actions = [
@@ -53,10 +53,10 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_s3_bucket" "firehose" {
-  bucket        = "${local.firehose_bucket_name}-${data.aws_caller_identity.current.account_id}-${local.region_short_name[data.aws_region.current.name]}"
+  bucket        = "${local.firehose_bucket_name}-${data.aws_caller_identity.current.account_id}-${local.region_short_name[data.aws_region.current.region]}"
   force_destroy = true
   tags = {
-    Name = "${local.firehose_bucket_name}-${data.aws_caller_identity.current.account_id}-${local.region_short_name[data.aws_region.current.name]}"
+    Name = "${local.firehose_bucket_name}-${data.aws_caller_identity.current.account_id}-${local.region_short_name[data.aws_region.current.region]}"
   }
 }
 
@@ -105,10 +105,10 @@ resource "aws_s3_bucket_lifecycle_configuration" "firehose" {
 }
 
 resource "aws_iam_role" "firehose" {
-  name               = "${local.firehose_role_name}-${local.region_short_name[data.aws_region.current.name]}"
+  name               = "${local.firehose_role_name}-${local.region_short_name[data.aws_region.current.region]}"
   assume_role_policy = data.aws_iam_policy_document.assume_role["firehose"].json
   tags = {
-    Name = "${local.firehose_role_name}-${local.region_short_name[data.aws_region.current.name]}"
+    Name = "${local.firehose_role_name}-${local.region_short_name[data.aws_region.current.region]}"
   }
 }
 
@@ -131,10 +131,10 @@ data "aws_iam_policy_document" "firehose" {
 }
 
 resource "aws_iam_policy" "firehose" {
-  name   = "${local.firehose_policy_name}-${local.region_short_name[data.aws_region.current.name]}"
+  name   = "${local.firehose_policy_name}-${local.region_short_name[data.aws_region.current.region]}"
   policy = data.aws_iam_policy_document.firehose.json
   tags = {
-    Name = "${local.firehose_policy_name}-${local.region_short_name[data.aws_region.current.name]}"
+    Name = "${local.firehose_policy_name}-${local.region_short_name[data.aws_region.current.region]}"
   }
 }
 
@@ -172,10 +172,10 @@ resource "aws_kinesis_firehose_delivery_stream" "main" {
 }
 
 resource "aws_iam_role" "cwlogs" {
-  name               = "${local.cwlogs_role_name}-${local.region_short_name[data.aws_region.current.name]}"
-  assume_role_policy = data.aws_iam_policy_document.assume_role["logs.${data.aws_region.current.name}"].json
+  name               = "${local.cwlogs_role_name}-${local.region_short_name[data.aws_region.current.region]}"
+  assume_role_policy = data.aws_iam_policy_document.assume_role["logs.${data.aws_region.current.region}"].json
   tags = {
-    Name = "${local.cwlogs_role_name}-${local.region_short_name[data.aws_region.current.name]}"
+    Name = "${local.cwlogs_role_name}-${local.region_short_name[data.aws_region.current.region]}"
   }
 }
 
@@ -191,10 +191,10 @@ data "aws_iam_policy_document" "cwlogs" {
 }
 
 resource "aws_iam_policy" "cwlogs" {
-  name   = "${local.cwlogs_policy_name}-${local.region_short_name[data.aws_region.current.name]}"
+  name   = "${local.cwlogs_policy_name}-${local.region_short_name[data.aws_region.current.region]}"
   policy = data.aws_iam_policy_document.cwlogs.json
   tags = {
-    Name = "${local.cwlogs_policy_name}-${local.region_short_name[data.aws_region.current.name]}"
+    Name = "${local.cwlogs_policy_name}-${local.region_short_name[data.aws_region.current.region]}"
   }
 }
 
