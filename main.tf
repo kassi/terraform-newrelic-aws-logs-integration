@@ -74,6 +74,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "firehose" {
     content {
       id     = "expiration"
       status = "Enabled"
+      filter {}
       expiration {
         days = var.firehose_bucket_expiration_days
       }
@@ -87,6 +88,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "firehose" {
     content {
       id     = "expiration_delete_markers"
       status = "Enabled"
+      filter {}
       expiration {
         expired_object_delete_marker = true
       }
@@ -97,6 +99,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "firehose" {
     content {
       id     = "abort_incomplete_multipart"
       status = "Enabled"
+      filter {}
       abort_incomplete_multipart_upload {
         days_after_initiation = 7
       }
